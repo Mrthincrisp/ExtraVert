@@ -5,4 +5,13 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-public record Plants(string Species, int LightNeeds, decimal AskingPrice, string City, string ZIP, bool Sold);
+public record Plants
+    (
+    string Species,
+    int LightNeeds,
+    decimal AskingPrice,
+    string City,
+    string ZIP,
+    bool Sold,
+    DateTime AvailableUntil
+    );

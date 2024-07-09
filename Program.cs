@@ -14,7 +14,18 @@ internal class Program
             new("Bladderwort", 5, 8.62m, "Nashville", "54876", false)
         ];
 
-        string greeting = @"Welcome to the Voracious Verde~
+        // Random is used to select a plant of the day displayed in the greeting
+        Random random = new();
+        Plants? PotD = null;
+        while (PotD == null || PotD.Sold)
+        {
+            int randomPlant = random.Next(1, plants.Count);
+            PotD = plants[randomPlant];
+        }
+
+
+        string greeting = @$"Welcome to the Voracious Verde~
+The Plant of the day is {PotD.Species}!
 Please make a selection:";
 
         string? choice = null;
@@ -25,7 +36,8 @@ Please make a selection:";
                         1. Display all plants
                         2. Post a plant to be adopted
                         3. Adopt a plant
-                        4. Delist a plant");
+                        4. Delist a plant
+                        5. Search for light specific needs");
             choice = Console.ReadLine();
             switch (choice)
             {
@@ -45,6 +57,9 @@ Please make a selection:";
                     break;
                 case "4":
                     DelistAPlant(plants);
+                    break;
+                case "5":
+                    PlantSearch(plants);
                     break;
                 default:
                     Console.WriteLine("PLEASE MAKE A SELECTION BETWEEN 0-4");
@@ -117,6 +132,7 @@ Please make a selection:";
                 Console.WriteLine("Invalid input or the plant is already sold.");
             }
         }
+
         void DelistAPlant(List<Plants> plants)
         {
             Console.WriteLine("To remove a plant enter thier number, or enter q, to return to the main menu.");
@@ -139,6 +155,25 @@ Please make a selection:";
             else
             {
                 Console.WriteLine("Invalid input. Please enter a valid number.");
+            }
+
+        }
+
+        void PlantSearch(List<Plants> plants)
+        {
+            Console.WriteLine($"Please enter a number from 1 to 5.");
+            if (int.TryParse(Console.ReadLine().Trim(), out int searchValue) && searchValue >= 1 && searchValue <= 5)
+            {
+                var plantlights = plants.Where(i => i.LightNeeds == searchValue).ToList();
+
+                foreach(var plant in plantlights)
+                {
+                    Console.WriteLine($"{plant.Species}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("1 through 5 only");
             }
 
         }
