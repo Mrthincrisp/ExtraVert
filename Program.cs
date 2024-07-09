@@ -37,7 +37,8 @@ Please make a selection:";
                         2. Post a plant to be adopted
                         3. Adopt a plant
                         4. Delist a plant
-                        5. Search for light specific needs");
+                        5. Search for light specific needs
+                        6. Voracious Stats");
             choice = Console.ReadLine();
             switch (choice)
             {
@@ -60,6 +61,9 @@ Please make a selection:";
                     break;
                 case "5":
                     PlantSearch(plants);
+                    break;
+                case "6":
+                    PlantStatistics(plants);
                     break;
                 default:
                     Console.WriteLine("PLEASE MAKE A SELECTION BETWEEN 0-4");
@@ -199,6 +203,61 @@ Please make a selection:";
                 Console.WriteLine("1 through 5 only");
             }
 
+        }
+
+        void PlantStatistics(List<Plants> plants)
+        {
+            string cheapest = GetCheapestPlant(plants);
+            int available = GetAvailablePlants(plants);
+            string light = GetLight(plants);
+            double averageLight = GetAverageLight(plants);
+            double success = GetAdoptionRate(plants);
+
+            Console.WriteLine($@"Stats
+Cheapest Plant: {cheapest}
+{available} plant(s) are available
+{light} require the most light
+the average light needs: {averageLight}
+plant addoption rate: {success:P2}");
+
+            string GetCheapestPlant(List<Plants> plants)
+            {
+                Plants cheapest = plants.OrderBy(i => i.AskingPrice).FirstOrDefault();
+                return cheapest != null ? cheapest.Species : "nada";
+            }   
+            
+            int GetAvailablePlants(List<Plants> plants)
+            {
+                int count = 0;
+                for (int i = 0; i < plants.Count; i++)
+                {
+                    if (!plants[i].Sold && plants[i].AvailableUntil > DateTime.Now)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+                        
+            }
+
+            string GetLight(List<Plants> plants) 
+            {
+                int MostLightRequired = plants.Max(item => item.LightNeeds);
+                var lightPlantsList = plants.Where(item => item.LightNeeds == MostLightRequired);
+                return string.Join(", ", lightPlantsList.Select(IThreadPoolWorkItem => IThreadPoolWorkItem.Species));
+            }
+
+            double GetAverageLight(List<Plants> plants)
+            {
+                return plants.Average(item => item.LightNeeds);
+            }
+
+            double GetAdoptionRate(List<Plants> plants) 
+            {
+                int totalPlants = plants.Count;
+                int soldPlants = plants.Count(item => item.Sold);
+                return (double)soldPlants / totalPlants;
+            }
         }
     }
 }
