@@ -7,11 +7,11 @@ internal class Program
     {
         List<Plants> plants =
         [
-            new("Venus Fly Trap", 4, 8.99m, "Columbia", "38401", false),
-            new("Pitcher Plants", 3, 10.99m, "Columbia", "38401", false),
-            new("Sundew", 5, 12.99m, "Nashville", "54876", true),
-            new("Waterwheel plant", 2, 12.73m, "Columbia", "38401", true),
-            new("Bladderwort", 5, 8.62m, "Nashville", "54876", false)
+            new("Venus Fly Trap", 4, 8.99m, "Columbia", "38401", false, new DateTime(2024, 5, 1) ),
+            new("Pitcher Plants", 3, 10.99m, "Columbia", "38401", false, new DateTime(2024, 4, 10)),
+            new("Sundew", 5, 12.99m, "Nashville", "54876", true, new DateTime(2024, 6, 11)),
+            new("Waterwheel plant", 2, 12.73m, "Columbia", "38401", true, new DateTime(2025, 7, 21)),
+            new("Bladderwort", 5, 8.62m, "Nashville", "54876", false, new DateTime(2025, 7, 30))
         ];
 
         // Random is used to select a plant of the day displayed in the greeting
@@ -72,7 +72,7 @@ Please make a selection:";
         {
             for (int i = 0; i < plants.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {plants[i].Species} in {plants[i].City} {(plants[i].Sold ? "was sold" : "is available")} for ${plants[i].AskingPrice}.");
+                Console.WriteLine($"{i + 1}. {plants[i].Species} in {plants[i].City} {(plants[i].Sold ? "was sold" : "is available")} for ${plants[i].AskingPrice}. This planty is no longer available after{plants[i].AvailableUntil}");
             }
         }
 
@@ -106,7 +106,30 @@ Please make a selection:";
 
             bool sold = false;
 
-            Plants newPlant = new(species, lightNeeds, askingPrice, city, zipCode, sold);
+            Console.WriteLine("When will this post expire?");
+            int year, month, day;
+
+            Console.WriteLine("Please enter a four digit year 0000:");
+            while (!int.TryParse(Console.ReadLine().Trim(), out year) || year < 1 || year > DateTime.MaxValue.Year)
+            {
+                Console.WriteLine("Invalid input. Please enter a valid year. (YYYY)");
+            }
+
+            Console.WriteLine("Month in 2 character format (MM).");
+            while (!int.TryParse(Console.ReadLine().Trim(), out month) || month < 1 || month > 12)
+            {
+                Console.WriteLine("Invalid input. Please enter a valid month. (MM)");
+            }
+
+            Console.WriteLine("Month in 2 character format (DD).");
+            while (!int.TryParse(Console.ReadLine().Trim(), out day) || day < 1 || day > 31)
+            {
+                Console.WriteLine("Invalid input. Please enter a valid day. (DD)");
+            }
+
+            DateTime date = new DateTime(year, month, day);
+
+            Plants newPlant = new(species, lightNeeds, askingPrice, city, zipCode, sold, date);
 
             plants.Add(newPlant);
             Console.WriteLine("Plant added.");
@@ -116,7 +139,7 @@ Please make a selection:";
         {
             for (int i = 0; i < plants.Count; i++)
             {
-                if (!plants[i].Sold)
+                if (!plants[i].Sold && plants[i].AvailableUntil > DateTime.Now)
                 {
                     Console.WriteLine($"If you'd like to adopt {plants[i].Species}, enter {i}");
                 }
