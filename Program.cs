@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 
 
 internal class Program
@@ -67,6 +68,8 @@ Please make a selection:";
                     break;
                 default:
                     Console.WriteLine("PLEASE MAKE A SELECTION BETWEEN 0-4");
+                    Console.Write("press any key to continue");
+                    Console.ReadKey();
                     break;
             }
         }
@@ -78,6 +81,8 @@ Please make a selection:";
             {
                 Console.WriteLine($"{i + 1}. {plants[i].Species} in {plants[i].City} {(plants[i].Sold ? "was sold" : "is available")} for ${plants[i].AskingPrice}. This planty is no longer available after{plants[i].AvailableUntil}");
             }
+            Console.Write("press any key to continue");
+            Console.ReadKey();
         }
 
         void PostPlant(List<Plants> plants)
@@ -110,33 +115,44 @@ Please make a selection:";
 
             bool sold = false;
 
-            Console.WriteLine("When will this post expire?");
-            int year, month, day;
-
-            Console.WriteLine("Please enter a four digit year 0000:");
-            while (!int.TryParse(Console.ReadLine().Trim(), out year) || year < 1 || year > DateTime.MaxValue.Year)
+            try
             {
-                Console.WriteLine("Invalid input. Please enter a valid year. (YYYY)");
-            }
+                Console.WriteLine("When will this post expire?");
+                int year, month, day;
 
-            Console.WriteLine("Month in 2 character format (MM).");
-            while (!int.TryParse(Console.ReadLine().Trim(), out month) || month < 1 || month > 12)
-            {
-                Console.WriteLine("Invalid input. Please enter a valid month. (MM)");
-            }
+                Console.WriteLine("Please enter a four digit year 0000:");
+                while (!int.TryParse(Console.ReadLine().Trim(), out year) || year < 1 || year > DateTime.MaxValue.Year)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid year. (YYYY)");
+                }
 
-            Console.WriteLine("Month in 2 character format (DD).");
-            while (!int.TryParse(Console.ReadLine().Trim(), out day) || day < 1 || day > 31)
-            {
-                Console.WriteLine("Invalid input. Please enter a valid day. (DD)");
-            }
+                Console.WriteLine("Month in 2 character format (MM).");
+                while (!int.TryParse(Console.ReadLine().Trim(), out month) || month < 1 || month > 12)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid month. (MM)");
+                }
 
-            DateTime date = new DateTime(year, month, day);
+                Console.WriteLine("Month in 2 character format (DD).");
+                while (!int.TryParse(Console.ReadLine().Trim(), out day) || day < 1 || day > 31)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid day. (DD)");
+                }
 
+                DateTime date = new DateTime(year, month, day);
             Plants newPlant = new(species, lightNeeds, askingPrice, city, zipCode, sold, date);
-
             plants.Add(newPlant);
             Console.WriteLine("Plant added.");
+            Console.Write("press any key to continue");
+            Console.ReadKey();
+            }
+            catch (ArgumentOutOfRangeException) 
+            {
+                Console.WriteLine($"The date put in is not valid, please try again a vaild date would look like 2025 11 20");
+                Console.Write("press any key to continue");
+                Console.ReadKey();
+            }
+
+
         }
 
         void AdoptAPlant(List<Plants> plants)
@@ -153,10 +169,14 @@ Please make a selection:";
             {
                 plants[index] = plants[index] with { Sold = true };
                 Console.WriteLine($"You have adopted {plants[index].Species}.");
+                Console.Write("press any key to continue");
+                Console.ReadKey();
             }
             else
             {
                 Console.WriteLine("Invalid input or the plant is already sold.");
+                Console.Write("press any key to return to the main menu");
+                Console.ReadKey();
             }
         }
 
@@ -178,10 +198,14 @@ Please make a selection:";
             {
                 Console.WriteLine($"The plant {plants[index].Species} has been removed.");
                 plants.RemoveAt(index);
+                Console.Write("press any key to continue");
+                Console.ReadKey();
             }
             else
             {
                 Console.WriteLine("Invalid input. Please enter a valid number.");
+                Console.Write("press any key to return to the main menu");
+                Console.ReadKey();
             }
 
         }
@@ -196,6 +220,8 @@ Please make a selection:";
                 foreach(var plant in plantlights)
                 {
                     Console.WriteLine($"{plant.Species}");
+                    Console.Write("press any key to continue");
+                    Console.ReadKey();
                 }
             }
             else
@@ -219,6 +245,8 @@ Cheapest Plant: {cheapest}
 {light} require the most light
 the average light needs: {averageLight}
 plant addoption rate: {success:P2}");
+            Console.Write("press any key to continue");
+            Console.ReadKey();
 
             string GetCheapestPlant(List<Plants> plants)
             {
